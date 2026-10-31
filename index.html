@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple daily expense tracker and budget visualizer.">
+  <title>Expense &amp; Budget Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/script.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PERSONAL FINANCE</p>
+        <h1>Expense <span>&amp;</span> Budget</h1>
+        <p class="subtitle">A clearer view of where your money goes.</p>
+      </div>
+      <div class="date-chip" id="todayLabel" aria-label="Today's date"></div>
+    </header>
+
+    <section class="summary-grid" aria-label="Spending summary">
+      <article class="summary-card balance-card">
+        <p class="card-label">Total Balance</p>
+        <h2 id="totalBalance">Rp0</h2>
+        <p class="card-note">Total recorded expenses</p>
+      </article>
+      <article class="summary-card">
+        <p class="card-label">This Month</p>
+        <h2 id="monthlyTotal">Rp0</h2>
+        <p class="card-note" id="monthLabel">Current month spending</p>
+      </article>
+      <article class="summary-card">
+        <p class="card-label">Transactions</p>
+        <h2 id="transactionCount">0</h2>
+        <p class="card-note">Recorded entries</p>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <div class="main-column">
+        <section class="panel form-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">ADD NEW</p>
+              <h2>New transaction</h2>
+            </div>
+          </div>
+          <form id="transactionForm" novalidate>
+            <div class="field">
+              <label for="itemName">Item name</label>
+              <input id="itemName" name="itemName" type="text" maxlength="60" placeholder="e.g. Lunch, Bus ticket" required>
+              <small class="error-message" id="nameError"></small>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="amount">Amount (IDR)</label>
+                <input id="amount" name="amount" type="number" min="1" step="1" placeholder="25000" required>
+                <small class="error-message" id="amountError"></small>
+              </div>
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                  <option value="">Choose category</option>
+                  <option value="Food">Food</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Fun">Fun</option>
+                </select>
+                <small class="error-message" id="categoryError"></small>
+              </div>
+            </div>
+            <div class="field">
+              <label for="transactionDate">Date</label>
+              <input id="transactionDate" name="transactionDate" type="date" required>
+              <small class="error-message" id="dateError"></small>
+            </div>
+            <button class="primary-button" type="submit">Add transaction <span aria-hidden="true">＋</span></button>
+            <p class="form-feedback" id="formFeedback" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel transactions-panel">
+          <div class="section-heading transactions-heading">
+            <div>
+              <p class="eyebrow">YOUR ACTIVITY</p>
+              <h2>Transactions</h2>
+            </div>
+            <div class="sort-control">
+              <span>Sort by</span>
+              <label for="sortSelect" class="visually-hidden">Sort transactions</label>
+              <select id="sortSelect">
+                <option value="newest">Newest</option>
+                <option value="amount-high">Amount: high to low</option>
+                <option value="amount-low">Amount: low to high</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
+          <div id="transactionList" class="transaction-list" aria-live="polite">
+            <div class="empty-state">
+              <span class="empty-icon">↗</span>
+              <strong>No transactions yet</strong>
+              <p>Add your first expense to see it here.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="panel chart-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">SPENDING BREAKDOWN</p>
+              <h2>By category</h2>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="categoryChart" role="img" aria-label="Pie chart showing expenses by category"></canvas>
+            <p class="chart-empty" id="chartEmpty">Your category breakdown will appear here.</p>
+          </div>
+          <div class="chart-legend" id="chartLegend"></div>
+        </section>
+
+        <section class="panel custom-category-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">MAKE IT YOURS</p>
+              <h2>Custom categories</h2>
+            </div>
+          </div>
+          <form id="categoryForm" class="category-form">
+            <label class="visually-hidden" for="newCategory">New category name</label>
+            <input id="newCategory" type="text" maxlength="24" placeholder="e.g. Shopping">
+            <button type="submit" class="secondary-button">Add</button>
+            <p class="form-feedback" id="categoryFeedback" role="status" aria-live="polite"></p>
+          </form>
+          <p class="helper-text">Add your own category to the transaction form. Default categories cannot be deleted.</p>
+          <div id="customCategoryList" class="custom-category-list"></div>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="footer">
+      <span>Expense &amp; Budget Visualizer</span>
+      <span>Your data is saved in this browser.</span>
+    </footer>
+  </main>
+</body>
+</html>
